@@ -1,8 +1,8 @@
 const { test, expect } = require('@playwright/test');
 
 
-test.only('Browser Context Playwright Test', async ({ browser }) => {
-    
+test('Browser Context Playwright Test', async ({ browser }) => {
+
     //chrome - plugins/cookies
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -44,5 +44,40 @@ test('Page Playwright Test', async ({ page }) => {
     //get titile - assertion
     console.log(await page.title());
     await expect(page).toHaveTitle("Google");
+
+});
+
+test.only('Lets Shop Playwright Test', async ({ browser }) => {
+
+    //chrome - plugins/cookies
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    const email = page.locator('#userEmail');
+    const loginBtn = page.locator('#login');
+    const cardTitles = page.locator('#products > div.container > div.row > div > div > div > h5 > b');
+
+    await page.goto("https://rahulshettyacademy.com/client");
+
+    await email.type("mujeeb@gmail.com");
+    await page.locator('#userPassword').type('Mujeeb@8143');
+    await loginBtn.click();
+    console.log(await page.locator('#toast-container').textContent());
+    await expect(page.locator('#toast-container')).toContainText('Incorrect');
+    
+    await email.fill("");
+    // entering the text 
+    await email.fill("mujeeb7036@gmail.com");
+    //clicking button
+    await loginBtn.click();
+    // grabbing the text of product
+    console.log(await cardTitles.first().textContent());
+    console.log(await cardTitles.nth(1).textContent());
+    //grabbing the text of all products 
+    const allTitles = (await cardTitles.allTextContents());
+    console.log(allTitles);
+
+
+
 
 });
