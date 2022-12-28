@@ -66,14 +66,10 @@ test.only('Lets Shop Playwright Test', async ({ browser }) => {
     await expect(page.locator('#toast-container')).toContainText('Incorrect');
     
     await email.fill("");
-    // entering the text 
     await email.fill("mujeeb7036@gmail.com");
-    //clicking button
     await loginBtn.click();
-    // grabbing the text of product
     console.log(await cardTitles.first().textContent());
     console.log(await cardTitles.nth(1).textContent());
-    //grabbing the text of all products 
     const allTitles = (await cardTitles.allTextContents());
     console.log(allTitles);
 
