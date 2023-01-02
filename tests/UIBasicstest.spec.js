@@ -48,7 +48,9 @@ test('Browser Context Playwright Test', async ({ browser }) => {
 test('UI Controls', async ({ page }) => {
 
     await page.goto("https://rahulshettyacademy.com/loginpagePractise/")
-
+    //selecting fields and entering
+    //selecting dropdown option
+    // check the radio button
     const userName = page.locator('#username');
     const signIn = page.locator('#signInBtn');
     const dropdown = page.locator('select[class="form-control"]');
