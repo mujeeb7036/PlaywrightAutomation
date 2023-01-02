@@ -17,5 +17,8 @@
   "homepage": "https://github.com/mujeeb7036/PlaywrightAutomation#readme",
   "devDependencies": {
     "@playwright/test": "^1.29.1"
+  },
+  "dependencies": {
+    "playwright": "^1.29.1"
   }
 }
