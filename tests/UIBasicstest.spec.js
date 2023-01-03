@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { text } = require('stream/consumers');
 
 
 test('Browser Context Playwright Test', async ({ browser }) => {
@@ -31,11 +32,11 @@ test('Browser Context Playwright Test', async ({ browser }) => {
         page.waitForNavigation(),
         signIn.click(),
 
-    ]  
+    ]
     );
     // grabbing the text of product
-            // console.log(await cardTitles.first().textContent());
-            // console.log(await cardTitles.nth(1).textContent());
+    // console.log(await cardTitles.first().textContent());
+    // console.log(await cardTitles.nth(1).textContent());
     //grabbing the text of all products 
     const allTitles = (await cardTitles.allTextContents());
     console.log(allTitles);
@@ -45,7 +46,7 @@ test('Browser Context Playwright Test', async ({ browser }) => {
 
 });
 
-test('UI Controls', async ({ page }) => {
+test.only('UI Controls', async ({ page }) => {
 
     await page.goto("https://rahulshettyacademy.com/loginpagePractise/")
     //selecting fields and entering
@@ -53,13 +54,49 @@ test('UI Controls', async ({ page }) => {
     // check the radio button
     const userName = page.locator('#username');
     const signIn = page.locator('#signInBtn');
+    const documentLink = page.locator('[href*="documents-request"]');
     const dropdown = page.locator('select[class="form-control"]');
+
     await dropdown.selectOption("consult");
     await page.locator('.checkmark').nth(1).click();
     await page.locator('#okayBtn').click();
-    await page.pause();
+    //assertion whether the checkbox is checked or not
+    console.log(await page.locator('.checkmark').nth(1).isChecked());
+    await expect(page.locator('.checkmark').nth(1)).toBeChecked();
+    await page.locator('#terms').click();
+    await expect(page.locator('#terms')).toBeChecked();
+    await page.locator('#terms').uncheck();
+    expect(await page.locator('#terms').isChecked()).toBeFalsy();
 
+    //Checking the attribute and its value
+    await expect(documentLink).toHaveAttribute("class", "blinkingText")
 
-   
+    // await page.pause();
 
 });
+
+//handlimg child windows
+test('child windows hadl', async ({ browser }) => {
+
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
+    const documentLink = page.locator('[href*="documents-request"]');
+    const [newPage] = await Promise.all([
+
+        context.waitForEvent('page'),
+        documentLink.click()
+
+    ])
+
+   const  text = await newPage.locator('.im-para.red').textContent();
+    console.log(text)
+    //Splitting the array 
+    const arrayText = text.split('@');
+    const domain = arrayText[1].split(' ')[0];
+    console.log(domain);
+    await page.locator('#username').type(domain);
+    //await page.pause();
+    console.log(await page.locator('#username').textContent());
+
+})
