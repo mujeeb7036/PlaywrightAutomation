@@ -46,7 +46,7 @@ test('Browser Context Playwright Test', async ({ browser }) => {
 
 });
 
-test.only('UI Controls', async ({ page }) => {
+test('UI Controls', async ({ page }) => {
 
     await page.goto("https://rahulshettyacademy.com/loginpagePractise/")
     //selecting fields and entering
@@ -76,7 +76,7 @@ test.only('UI Controls', async ({ page }) => {
 });
 
 //handlimg child windows
-test('child windows hadl', async ({ browser }) => {
+test('child windows handle', async ({ browser }) => {
 
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -99,4 +99,4 @@ test('child windows hadl', async ({ browser }) => {
     //await page.pause();
     console.log(await page.locator('#username').textContent());
 
-})
+});
