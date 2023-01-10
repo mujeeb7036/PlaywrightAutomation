@@ -15,7 +15,7 @@ test.only('Lets Shop Playwright Test', async ({ page }) => {
     const loginBtn = page.locator('#login');
     const cardTitles = page.locator('.card-body b');
     const products = page.locator('.card-body');
-    const orderIds = page.locator("th[scope$='row']");
+    const rows = page.locator("tbody tr");
 
     await page.goto("https://rahulshettyacademy.com/client");
 
@@ -68,21 +68,23 @@ test.only('Lets Shop Playwright Test', async ({ page }) => {
     //await page.pause();
     await page.locator("button[routerlink*='myorders']").click()
 
-    const orderidCount = orderIds.count();
-    for (let i = 0; i < orderidCount; i++) {
-        if (await orderIds.nth(i).textContent === ordId) {
+    await page.locator("tbody").waitFor();
+    //const orderidCount = orderIds.count();
+    for (let i = 0; i < await rows.count(); ++i) {
 
+        const rowOrderId = await rows.nth(i).locator("th").textContent();
+        if (ordId.includes(rowOrderId))
+        {
 
-            await orderIds.nth(i).locator('.btn.btn-primary').click();
+            await rows.nth(i).locator("button").first().click();
             break;
         }
+        
     }
 
-    const addrs = await page.locator('body > app-root > app-order-details > div > div > div > div > div.email-container > div:nth-child(3) > div:nth-child(2) > div div').textContent();
-    console.log(addrs)
-
-
-
+    const orderIdDetails = await page.locator(".col-text").textContent();
+        expect(ordId.includes(orderIdDetails))
+        console.log("completed")
 
 
 
