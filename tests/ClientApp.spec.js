@@ -42,7 +42,7 @@ test.only('Lets Shop Playwright Test', async ({ page }) => {
     expect(bool).toBeTruthy();
     await page.locator("text=Checkout").click()
 
-    await page.locator("[placeholder*='Country']").type('ind', { delay: 1000 });
+    await page.locator("[placeholder*='Country']").type('indi', { delay: 1000 });
     const dropdown = await page.locator('.ta-results');
     await dropdown.waitFor();
     const optionsCount = await dropdown.locator('button').count();
