@@ -1,28 +1,50 @@
-const { test, expect } = require('@playwright/test');
-const { copyFileSync } = require('fs');
-const path = require('path');
-const { text } = require('stream/consumers');
+const { test, expect, request } = require('@playwright/test')
+
+const loginpayload = { userEmail: "mujeeb7036@gmail.com", userPassword: "Mujeeb@8143" }
+let token
 
 
+test.beforeAll(async () => {
+    //creating API request
+    const apiContext = await request.newContext();
+    //Hitting URL with POST method
+    const loginResponse = await apiContext.post('https://rahulshettyacademy.com/api/ecom/auth/login',
+        {
+            data: loginpayload
+        })
+        //Checking whether response code is 200-299
+    expect(loginResponse.ok()).toBeTruthy();
+    //Getting the json from response
+    const loginResponseJson = await loginResponse.json();
+    // Taking only the token from the json response
+    token = loginResponseJson.token;
+    console.log(token);
 
-test.only('Lets Shop Playwright Test', async ({ page }) => {
+
+});
+
+test.beforeEach(() => {
 
 
-    const myemail = "mujeeb7036@gmail.com";
-    const productName = 'adidas original';
-    const email = page.locator('#userEmail');
-    const psw = page.locator('#userPassword');
-    const loginBtn = page.locator('#login');
-    const cardTitles = page.locator('.card-body b');
-    const products = page.locator('.card-body');
-    const rows = page.locator("tbody tr");
+})
+
+test('Client App login', async ({ page }) => {
+
+    //Inserting the token in localstorage in the window with js
+    page.addInitScript(value =>{
+
+        window.localStorage.setItem('token',value);
+    },token ); 
+
 
     await page.goto("https://rahulshettyacademy.com/client");
 
-    await email.fill(myemail);
-    await psw.fill('Mujeeb@8143');
-    await loginBtn.click();
-
+    const myemail = "mujeeb7036@gmail.com";
+    const productName = 'adidas original';
+    const cardTitles = page.locator('.card-body b');
+    const products = page.locator('.card-body');
+    const rows = page.locator("tbody tr");
+   
     await page.waitForLoadState('networkidle');
     const allTitles = (await cardTitles.allTextContents());
     console.log(allTitles);
@@ -58,7 +80,7 @@ test.only('Lets Shop Playwright Test', async ({ page }) => {
 
 
     await expect(page.locator(".user__name label[type='text']")).toHaveText(myemail);
-        await page.locator('.action__submit').click({force:true})
+    await page.locator('.action__submit').click({ force: true })
 
     await page.waitForLoadState();
     await expect(page.locator(".hero-primary")).toHaveText(" Thankyou for the order. ")
@@ -73,20 +95,20 @@ test.only('Lets Shop Playwright Test', async ({ page }) => {
     for (let i = 0; i < await rows.count(); ++i) {
 
         const rowOrderId = await rows.nth(i).locator("th").textContent();
-        if (ordId.includes(rowOrderId))
-        {
+        if (ordId.includes(rowOrderId)) {
 
             await rows.nth(i).locator("button").first().click();
             break;
         }
-        
+
     }
 
     const orderIdDetails = await page.locator(".col-text").textContent();
-        expect(ordId.includes(orderIdDetails)).toBeTruthy();
-        console.log("completed")
-
-
+    expect(ordId.includes(orderIdDetails)).toBeTruthy();
+    console.log("completed")
 
 });
+
+
+
 
