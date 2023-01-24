@@ -18,7 +18,7 @@ const config = {
     browserName : 'chromium',
     headless : false,
     screenshot : 'on',
-    trace : 'retain-on-fail' //on, off
+    trace : 'retain-on-fail' //on, off,retain-on-fail
     
   },
 
